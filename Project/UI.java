@@ -97,7 +97,7 @@ public class UI {
 
 
     public String idGenerator() throws Exception {
-        File idFile = new File(".\\RecepeStoreJava\\ProjectData\\ids.txt");
+        File idFile = new File(".\\ProjectData\\ids.txt");
         boolean canAppendToFile = true;
 
         String characters = "0123456789qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM";

@@ -63,76 +63,84 @@ public class PostgreSQLSave implements ISaver{
                 st.execute("INSERT INTO recepe_books(book_id, book_name) "+
                 "VALUES('" + book.getId() + "', '" + book.getName() + "')");
 
-                Statement stFood = conn.createStatement();
-                ResultSet resultSetFood = null;
-
                 for(var food : book.getListOfFoods())
                 {
-                    Statement stSpice = conn.createStatement();
-                    ResultSet resultSetSpice = null;
-
                     if(food instanceof Appetizer)
                     {
                         Appetizer appetizer = (Appetizer) food;
-                        resultSetFood = metaData.getTables(null, null, "appetizers", null);
-                        if(!resultSetFood.next())
+                        resultSet = metaData.getTables(null, null, "appetizers", null);
+                        if(!resultSet.next())
                         {
-                            stFood.execute("CREATE TABLE appetizers(book_id text, id text, appetizer_name text, "+ 
-                                ", serve_cold boolean,time_to_prepare time)");
+                            st.execute("CREATE TABLE appetizers(book_id text, id text, appetizer_name text, "+ 
+                                "serve_cold boolean, time_to_prepare time)");
                         }
 
-                        stFood.execute("INSERT INTO appetizers(book_id, id, appetizer_name, "+
-                        "serve_cold,time_to_prepare) VALUES('" + book.getId() + "', '" +
+                        st.execute("INSERT INTO appetizers(book_id, id, appetizer_name, " +
+                        "serve_cold, time_to_prepare) VALUES('" + book.getId() + "', '" +
                         appetizer.getId() + "', '" + appetizer.getNameOfFood() + "', " +
-                        appetizer.isServeCold() + ", " + appetizer.getTimeToPrepare() + ")");
+                        appetizer.isServeCold() + ", '" + appetizer.getTimeToPrepare() + "')");
                     }
                     else if(food instanceof Dessert)
                     {
                         Dessert dessert = (Dessert) food;
-                        resultSetFood = metaData.getTables(null, null, "desserts", null);
+                        resultSet = metaData.getTables(null, null, "desserts", null);
 
-                        if(!resultSetFood.next())
+                        if(!resultSet.next())
                         {
-                            stFood.execute("CREATE TABLE desserts(book_id text, id text, dessert_name text, "+ 
+                            st.execute("CREATE TABLE desserts(book_id text, id text, dessert_name text, "+ 
                                 "serve_cold boolean, need_to_cook boolean, time_to_prepare time)");
                         }
 
-                        stFood.execute("INSERT INTO desserts(book_id, id, dessert_name, " +
+                        st.execute("INSERT INTO desserts(book_id, id, dessert_name, " +
                         "serve_cold, need_to_cook, time_to_prepare) "+ 
                         "VALUES('" + book.getId() + "', '" + dessert.getId() + "', '" + dessert.getNameOfFood() + "', " +
-                        dessert.isServeCold() + ", " +dessert.isNeedToCook() + ", " + dessert.getTimeToPrepare() +
-                        ")"); 
+                        dessert.isServeCold() + ", " +dessert.isNeedToCook() + ", '" + dessert.getTimeToPrepare() +
+                        "')"); 
                     }
                     else
                     {
                         SecondMeal secondMeal = (SecondMeal) food;
-                        resultSetFood = metaData.getTables(null, null, "second_meals", null);
+                        resultSet = metaData.getTables(null, null, "second_meals", null);
 
-                        if(!resultSetFood.next())
+                        if(!resultSet.next())
                         {
-                            stFood.execute("CREATE TABLE second_meals(book_id text, id text, second_meal_name text, "+ 
-                                ", serve_cold boolean, need_to_cook boolean, time_to_prepare time)");
+                            st.execute("CREATE TABLE second_meals(book_id text, id text, second_meal_name text, "+ 
+                                "serve_cold boolean, need_to_cook boolean, time_to_prepare time)");
                         }
 
-                        stFood.execute("INSERT INTO second_meals(book_id, id, second_meal_name, " +
+                        st.execute("INSERT INTO second_meals(book_id, id, second_meal_name, " +
                             "serve_cold, need_to_cook, time_to_prepare) " +
                             "VALUES('" + book.getId() + "', '" + secondMeal.getId() + "', '" + secondMeal.getNameOfFood() + "', " +
-                            secondMeal.isServeCold() + ", " + secondMeal.isNeedToCook() + ", " +
-                            secondMeal.getTimeToPrepare() + ")");
+                            secondMeal.isServeCold() + ", " + secondMeal.isNeedToCook() + ", '" +
+                            secondMeal.getTimeToPrepare() + "')");
 
                         for(var spice : secondMeal.getListOfSpices())
                         {
-                            resultSetSpice = metaData.getTables(null, null, "spices", null);
-                            if(!resultSetSpice.next())
+                            resultSet = metaData.getTables(null, null, "spices", null);
+                            if(!resultSet.next())
                             {
-                                stSpice.execute("CREATE TABLE spices(food_id text, spice_name text");
+                                st.execute("CREATE TABLE spices(food_id text, spice_name text)");
                             }
 
-                            stSpice.execute("INSERT INTO spices(food_id, spice_name) " +
+                            st.execute("INSERT INTO spices(food_id, spice_name) " +
                             "VALUES('" + secondMeal.getId() + 
-                            ", " + spice + "')");
+                            "', '" + spice + "')");
                         }
                     }
+
+                    for(var ingredient : food.getListOfIngredients())
+                    {
+                        resultSet = metaData.getTables(null, null, "food_ingredients", null);
+
+                        if(!resultSet.next())
+                        {
+                            st.execute("CREATE TABLE food_ingredients(food_id text, ingredient_name text)");
+                        }
+
+                        st.execute("INSERT INTO food_ingredients(food_id, ingredient_name) " + 
+                        "VALUES('" + food.getId() + "', '" + ingredient + "')"); 
+                    }
+
                 }
             }
             conn.close();

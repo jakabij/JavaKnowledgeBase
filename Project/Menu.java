@@ -10,6 +10,7 @@ public class Menu {
     String postgrePassword ="admin";
     File file = new File(filePath);
     Store store;
+
     public Menu() throws Exception
     {
         if (file.exists())
@@ -44,7 +45,8 @@ public class Menu {
             }
             catch(Exception ex)
             {
-                ui.getInfo("Wrong attributes! Recepe book not created.");
+                System.out.println(ex);
+                // ui.getInfo("Wrong attributes! Recepe book not created.");
             }
         }
 
