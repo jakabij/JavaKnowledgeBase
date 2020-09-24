@@ -1,5 +1,3 @@
-package JavaKnowledgeBase.Project;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +11,7 @@ public class UI {
         System.out.println("\t- 1) To list the known recepe(s).\n\t" + "- 2) To create new recepe book.\n\t"
                 + "- 3) To modify a recepe book.\n\t" + "- 4) To remove a recepe book.\n\t"
                 + "- 5) To find book by food name.\n\t" + "- 6) To show Book's recepe by book ID.\n\t"
-                + "- 7) To save to xml.\n\t" + "- 0) To exit.\n\n\n");
+                + "- 7) To save to xml.\n\t" + "- 8) To save to database.\n\t" + "- 0) To exit.\n\n\n");
     }
 
     public void printUpdateMenu(String bookName) {

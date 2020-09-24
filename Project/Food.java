@@ -1,5 +1,3 @@
-package JavaKnowledgeBase.Project;
-
 import java.util.ArrayList;
 
 public class Food {

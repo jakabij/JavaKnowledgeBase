@@ -1,5 +1,3 @@
-package JavaKnowledgeBase.Project;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +5,9 @@ import java.util.Arrays;
 public class Menu {
     UI ui = new UI();
     String filePath = ".\\RecepeStoreJava\\ProjectData\\data.xml";
+    String postgreSQLUrl = "jdbc:postgresql://localhost:5432/java_knowledge_base";
+    String postgreUsername = "postgres";
+    String postgrePassword ="admin";
     File file = new File(filePath);
     Store store;
     public Menu() throws Exception
@@ -14,7 +15,7 @@ public class Menu {
         if (file.exists())
         {
             XMLLoader loader = new XMLLoader();
-            store = loader.loadFromXml(filePath);
+            store = loader.loadFromFile(filePath);
             ui.getInfo("Loading from database was successful.");
         }
         else
@@ -143,9 +144,14 @@ public class Menu {
         else if (choice.equals("7"))
         {
             XMLSaver saver = new XMLSaver();
-            saver.saveToXml(filePath, store);
+            saver.saveToFile(filePath, store);
             ui.clearScreen();
             ui.getInfo("Save was successfull.");
+        }
+        else if(choice.equals("8"))
+        {
+            PostgreSQLSave sqlSaver = new PostgreSQLSave(postgreSQLUrl, postgreUsername, postgrePassword, store);
+            sqlSaver.saveToFile(null, store);
         }
         else if (choice.equals("0"))
         {
