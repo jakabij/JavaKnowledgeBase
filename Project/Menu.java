@@ -155,6 +155,11 @@ public class Menu {
             PostgreSQLSave sqlSaver = new PostgreSQLSave(postgreSQLUrl, postgreUsername, postgrePassword, store);
             sqlSaver.saveToFile(null, store);
         }
+        else if(choice.equals("9"))
+        {
+            PostgreSQLLoader sqlLoader = new PostgreSQLLoader(postgreSQLUrl, postgreUsername, postgrePassword);
+            store = sqlLoader.loadFromFile(null);
+        }
         else if (choice.equals("0"))
         {
             System.exit(0);

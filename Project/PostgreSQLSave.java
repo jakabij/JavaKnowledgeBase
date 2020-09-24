@@ -140,7 +140,6 @@ public class PostgreSQLSave implements ISaver{
                         st.execute("INSERT INTO food_ingredients(food_id, ingredient_name) " + 
                         "VALUES('" + food.getId() + "', '" + ingredient + "')"); 
                     }
-
                 }
             }
             conn.close();
