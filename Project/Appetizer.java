@@ -2,7 +2,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 
 public class Appetizer extends Food {
-    public Time timeToPrepare;
+    private Time timeToPrepare;
 
     public Appetizer() { }
     public Appetizer(String id, String nameOfFood, boolean serveCold,

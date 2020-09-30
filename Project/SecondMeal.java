@@ -2,9 +2,9 @@ import java.sql.Time;
 import java.util.ArrayList;
 
 public class SecondMeal extends Food {
-    public boolean needToCook;
-    public Time timeToPrepare;
-    public ArrayList<String> listOfSpices;
+    private boolean needToCook;
+    private Time timeToPrepare;
+    private ArrayList<String> listOfSpices;
 
     public SecondMeal() { }
     public SecondMeal(String id, String nameOfFood, boolean serveCold, ArrayList<String> listOfingredients,

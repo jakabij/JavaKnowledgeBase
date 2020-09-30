@@ -3,10 +3,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class RecipeBook {
-    UI ui = new UI();
-    String id;
-    String name;
-    ArrayList<Food> listOfFoods;
+    private UI ui = new UI();
+    private String id;
+    private String name;
+    private ArrayList<Food> listOfFoods;
 
     public RecipeBook() throws Exception
     {

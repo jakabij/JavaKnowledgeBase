@@ -1,122 +1,101 @@
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Menu {
     UI ui = new UI();
-    String filePath = ".\\RecepeStoreJava\\ProjectData\\data.xml";
+    String idStoreFile = ".\\ProjectData\\ids.txt";
+    String filePath = ".\\ProjectData\\data.xml";
     String postgreSQLUrl = "jdbc:postgresql://localhost:5432/java_knowledge_base";
     String postgreUsername = "postgres";
-    String postgrePassword ="admin";
+    String postgrePassword = "admin";
     File file = new File(filePath);
     Store store;
 
-    public Menu() throws Exception
-    {
-        if (file.exists())
-        {
+    public Menu() throws Exception {
+        if (file.exists()) {
             XMLLoader loader = new XMLLoader();
             store = loader.loadFromFile(filePath);
             ui.getInfo("Loading from database was successful.");
-        }
-        else
-        {
+        } else {
             store = new Store();
             ui.getInfo("No database found.");
         }
     }
 
-    public void menuStart() throws Exception
-    {
+    public void menuStart() throws Exception {
         ui.start();
         String choice = ui.getInputFromUser("\nYour choice: ");
 
-        if (choice.equals("1"))
-        {
+        if (choice.equals("1")) {
             ui.clearScreen();
             readAllBooks();
         }
 
-        else if (choice.equals("2"))
-        {
-            try
-            { 
+        else if (choice.equals("2")) {
+            try {
                 createRecepeBook();
-            }
-            catch(Exception ex)
-            {
-                System.out.println(ex);
-                // ui.getInfo("Wrong attributes! Recepe book not created.");
+            } catch (Exception ex) {
+                ui.getInfo("Wrong attributes! Recepe book not created.");
             }
         }
 
-        else if (choice.equals("3"))
-        {
-            while (true)
-            {
+        else if (choice.equals("3")) {
+            while (true) {
                 readAllBooks();
-                String bookId = ui.getInputFromUser("The book's ID that you are searching for or press 0 to EXIT: ");
+                String bookId = ui.getInputFromUser("The book's ID that you are searching" +
+                " for or press 0 to EXIT: ");
+
                 if (bookId.equals("0"))
                     break;
 
                 boolean foundIt = false;
                 RecipeBook recipeBook = null;
-                for(var book : store.getListOfRecipeBooks())
-                {
-                    if (book.getId().equals(bookId))
-                    {
+                for (var book : store.getListOfRecipeBooks()) {
+                    if (book.getId().equals(bookId)) {
                         foundIt = true;
                         recipeBook = book;
                         break;
                     }
                 }
 
-                if (foundIt)
-                {
-                    while (true)
-                    {
+                if (foundIt) {
+                    while (true) {
                         ui.getBookFoods(recipeBook);
                         ui.printUpdateMenu(recipeBook.getName());
                         String choice3 = ui.getInputFromUser("\nYou chose: ");
 
-                        if (choice3.equals("1"))
-                        {
+                        if (choice3.equals("1")) {
                             deleteFood(recipeBook);
-                        }
-                        else if (choice3.equals("2"))
-                        {
-                            try
-                            {
+
+                        } else if (choice3.equals("2")) {
+                            try {
                                 Food food = createFoodForRecipeBook(recipeBook);
                                 recipeBook.addFood(food);
                                 ui.clearScreen();
                                 ui.getInfo("Food successfully added to the book.");
-                            }
-                            catch(Exception ex)
-                            {
+
+                            } catch (Exception ex) {
                                 ui.getInfo("Not valid attributes added!");
                                 ui.getInfo("Food does not created.");
                             }
-                        }
-                        else if (choice3.equals("3"))
-                        {
+
+                        } else if (choice3.equals("3")) {
                             break;
-                        }
-                        else
-                        {
+
+                        } else {
                             ui.getInfo("Invalid attribute!");
                         }
                     }
-                }
-                else
-                {
+                } else {
                     ui.getInfo("Invalid ID");
                 }
             }
         }
 
-        else if (choice.equals("4"))
-        {
+        else if (choice.equals("4")) {
             ui.clearScreen();
             readAllBooks();
             String id = ui.getInputFromUser("\nRecepe book's ID to delete: ");
@@ -128,54 +107,46 @@ public class Menu {
                 ui.getInfo("Recepe book not found.");
         }
 
-        else if (choice.equals("5"))
-        {
+        else if (choice.equals("5")) {
             String bookName = ui.getInputFromUser("\nFood name: ");
             ui.clearScreen();
             findBookByFoodName(bookName, store);
-        }
-        else if (choice.equals("6"))
-        {
+
+        } else if (choice.equals("6")) {
             ui.clearScreen();
             readAllBooks();
             String bookId = ui.getInputFromUser("\nBook ID: ");
-            
+
             showRecepeByBookId(bookId, store);
             ui.clearScreen();
-        }
-        else if (choice.equals("7"))
-        {
+
+        } else if (choice.equals("7")) {
             XMLSaver saver = new XMLSaver();
             saver.saveToFile(filePath, store);
             ui.clearScreen();
             ui.getInfo("Save was successfull.");
-        }
-        else if(choice.equals("8"))
-        {
-            PostgreSQLSave sqlSaver = new PostgreSQLSave(postgreSQLUrl, postgreUsername, postgrePassword, store);
+
+        } else if (choice.equals("8")) {
+            PostgreSQLSave sqlSaver = new PostgreSQLSave(postgreSQLUrl, postgreUsername,
+             postgrePassword, store);
             sqlSaver.saveToFile(null, store);
-        }
-        else if(choice.equals("9"))
-        {
-            PostgreSQLLoader sqlLoader = new PostgreSQLLoader(postgreSQLUrl, postgreUsername, postgrePassword);
+
+        } else if (choice.equals("9")) {
+            PostgreSQLLoader sqlLoader = new PostgreSQLLoader(postgreSQLUrl, postgreUsername,
+             postgrePassword);
             store = sqlLoader.loadFromFile(null);
-        }
-        else if (choice.equals("0"))
-        {
+
+        } else if (choice.equals("0")) {
             System.exit(0);
-        }
-        else
-        {
+
+        } else {
             ui.clearScreen();
             ui.getInfo("Invalid attribute!");
         }
     }
 
-
-
-    public void printAllBooks(ArrayList<RecipeBook> listOfBooks)
-    {
-        int nameCellWidth = getMaxBookName(listOfBooks) + 4;  
+    public void printAllBooks(ArrayList<RecipeBook> listOfBooks) {
+        int nameCellWidth = getMaxBookName(listOfBooks) + 4;
         int idCellWidth = 9;
 
         ui.tableCloser(true, nameCellWidth, idCellWidth);
@@ -183,14 +154,10 @@ public class Menu {
         ui.tableCloser(false, nameCellWidth, idCellWidth);
     }
 
-
-    private int getMaxBookName(ArrayList<RecipeBook> listOfBooks)
-    {
+    private int getMaxBookName(ArrayList<RecipeBook> listOfBooks) {
         int maxLenght = 0;
-        for(var book : listOfBooks)
-        {
-            if(book.getName().length() > maxLenght)
-            {
+        for (var book : listOfBooks) {
+            if (book.getName().length() > maxLenght) {
                 maxLenght = book.getName().length();
             }
         }
@@ -198,17 +165,22 @@ public class Menu {
         return maxLenght;
     }
 
+    public void readAllBooks() {
+        if (store.getListOfRecipeBooks().size() < 1) {
+            try {
+                ui.clearScreen();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-    public void readAllBooks() throws Exception
-    {
-        if (store.getListOfRecipeBooks().size() < 1)
-        {
-            ui.clearScreen();
             ui.getInfo("There is no recepe in the store.");
-        }
-        else
-        {
-            ui.clearScreen();
+        } else {
+            try {
+                ui.clearScreen();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             printAllBooks(store.getListOfRecipeBooks());
         }
     }
@@ -248,6 +220,9 @@ public class Menu {
             {
                 foundTheFood = true;
                 recipeBook.getListOfFoods().remove(count);
+
+                deleteIDFromTextFile(foodId);
+
                 ui.clearScreen();
                 ui.getInfo("Food successfully removed.");
                 break;
@@ -374,6 +349,35 @@ public class Menu {
         else
         {
             ui.getInfo("Book not found!");
+        }
+    }
+
+    public void deleteIDFromTextFile(String foodId){
+        try
+        {
+            File file = new File(idStoreFile);
+            Scanner fileScanner = new Scanner(file);
+            String newFileData = "";
+
+            //get existing data from the text file
+            while(fileScanner.hasNextLine())
+            {
+                String data = fileScanner.nextLine();
+                
+                if(!data.equals(foodId)){
+                    newFileData += (data + "\n");
+                }
+            }
+            fileScanner.close();
+
+            //create the text file without the deleted food's id
+            FileWriter fw = new FileWriter(file);
+            fw.write(newFileData);
+            fw.close();
+        }
+        catch(Exception ex)
+        {
+            System.err.println(ex);
         }
     }
 }

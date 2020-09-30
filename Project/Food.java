@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 
 public class Food {
-    public String id;
-    public String nameOfFood;
-    public boolean serveCold;
-    public ArrayList<String> listOfIngredients;
+    private String id;
+    private String nameOfFood;
+    private boolean serveCold;
+    private ArrayList<String> listOfIngredients;
 
     public Food() { }
     public Food(String id, String nameOfFood, boolean serveCold, ArrayList<String> listOfingredients)

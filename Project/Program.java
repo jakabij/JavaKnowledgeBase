@@ -4,9 +4,6 @@ public class Program {
     while(true)
     { 
         menu.menuStart();
-        // this.url = "jdbc:postgresql://localhost:5432/testing";
-        // this.user = "postgres";
-        // this.password = "admin";
     }
   }
 }

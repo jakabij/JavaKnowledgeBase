@@ -1,7 +1,9 @@
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -14,6 +16,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 public class XMLLoader implements ILoader {
+
+    private String filePath = ".\\ProjectData\\ids.txt";
 
     @Override
     public Store loadFromFile(String path) throws Exception {
@@ -28,6 +32,7 @@ public class XMLLoader implements ILoader {
             doc.getDocumentElement().normalize();
 
             Store store = new Store();
+            ArrayList<String> idsToStore = new ArrayList<>();
 
             //We collect all of the recepe books to a list.
             NodeList recepeBookList = doc.getElementsByTagName("RecepeBook");
@@ -41,12 +46,14 @@ public class XMLLoader implements ILoader {
                 String bookName = recepeBook.getAttribute("name");
                 String bookId = recepeBook.getAttribute("id");
 
+                idsToStore.add(bookId);
+
                 ArrayList<Food> listOfFoods = new ArrayList<>();
 
                 //get all the foods of the current book
                 NodeList foodList = node.getChildNodes();
 
-                for(int count2 = 0; count2 < recepeBookList.getLength(); count2++)
+                for(int count2 = 0; count2 < foodList.getLength(); count2++)
                 {
                     Node node2 = foodList.item(count2);
 
@@ -58,9 +65,9 @@ public class XMLLoader implements ILoader {
                         boolean foodToServeCold = Boolean.parseBoolean(food.getAttribute("toServeCold"));
                         Time foodTimeToPrepare = Time.valueOf(food.getAttribute("timeToPrepare"));
                         String foodType = food.getAttribute("foodType");
-                        //+ list of ingreds
+                       
+                        idsToStore.add(foodId);
 
-                        //get the ingredients
                         if(foodType.equals("SecondMeal"))
                         {
                             NodeList ingredientsAndSpices = food.getChildNodes();
@@ -132,13 +139,50 @@ public class XMLLoader implements ILoader {
                 book = new RecipeBook(bookName, bookId, listOfFoods);
                 store.addRecipeBook(book);
             }
-            
+
+            saveIdToIDStore(filePath, idsToStore);
+
             return store;
 
             }
         catch (SAXException | IOException | ParserConfigurationException e)
         {
             throw new Exception(e);
+        }
+    }
+
+    public void saveIdToIDStore(String filePath, ArrayList<String> ids){
+        try
+        {
+            File file = new File(filePath);
+
+            Scanner fileScanner = new Scanner(file);
+            String newFileData = "";
+
+            //get the loaded ids first
+            for(var id : ids){
+                newFileData += (id +"\n");
+            }
+
+            //get existing data from the text file
+            while(fileScanner.hasNextLine())
+            {
+                String data = fileScanner.nextLine();
+                
+                if(!ids.contains(data)){
+                    newFileData += (data  + "\n");
+                }
+            }
+            fileScanner.close();
+
+            //create the text file without the deleted food's id
+            FileWriter fw = new FileWriter(file);
+            fw.write(newFileData);
+            fw.close();
+        }
+        catch(Exception ex)
+        {
+            System.err.println(ex);
         }
     }
 }

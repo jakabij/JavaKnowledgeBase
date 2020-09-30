@@ -2,8 +2,8 @@ import java.sql.Time;
 import java.util.ArrayList;
 
 public class Dessert extends Food {
-    public boolean needToCook;
-    public Time timeToPrepare;
+    private boolean needToCook;
+    private Time timeToPrepare;
 
     public Dessert() { }
     public Dessert(String id, String nameOfFood, boolean serveCold,
